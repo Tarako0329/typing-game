@@ -105,9 +105,9 @@ html{
 		font-size: 62.5%; /*ルートサイズ10px=1rem算出をしやすくするために*/
 		touch-action: manipulation; /*スマフォのダブルタップによるズームを防ぐ*/
 }
-.common_header{
-		height: 70px; /* 高さを70pxに指定 */
-		padding: 2px 2px; /* ヘッダーに上下左右それぞれ余白を指定 */
+header{
+		height: 50px; /* 高さを70pxに指定 */
+		padding: 10px 2px; /* ヘッダーに上下左右それぞれ余白を指定 */
 		box-sizing: border-box; /* padding分を含んで幅を100%にするため */
 		position: fixed;  /*ウィンドウを基準に画面に固定 */
 		top: 0; /* 上下の固定位置を上から0pxにする */
