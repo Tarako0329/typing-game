@@ -10,6 +10,7 @@ function shutdown()
 }
 register_shutdown_function('shutdown');
 
+$time=date('Ymd-His');
 ?>
 <!DOCTYPE html>
 <html lang='ja'>
@@ -18,16 +19,15 @@ register_shutdown_function('shutdown');
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
   <META http-equiv='Content-Type' content='text/html; charset=UTF-8'>
   <link rel='apple-touch-icon' href='apple-touch-icon.png'>
-  <!-- Bootstrap5 CSS -->
+  <!-- Bootstrap5 CSS/js -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <!-- Bootstrap Javascript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  <!-- fontawesome 
-  <script src='https://kit.fontawesome.com/d284aacf89.js' crossorigin='anonymous'></script>-->
-  <link href="css/FontAwesome/6.1.1-web/css/all.css" rel="stylesheet">
-  <!-- オリジナル CSS -->
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=Reggae+One&family=Rowdies&display=swap" rel="stylesheet">
   <!--サイト共通-->
-  <link rel='stylesheet' href='css/style.css?' >
+  <link rel='stylesheet' href='css/style.css?<?php echo $time; ?>' >
   <!--Vue.js-->
   <script src="https://unpkg.com/vue@next"></script>
   <script src="https://unpkg.com/vue-cookies@1.8.2/vue-cookies.js"></script>
@@ -50,10 +50,20 @@ register_shutdown_function('shutdown');
   <div  id='app'>
   <header><h1>タイピング、やろ～よ</h1></header>
   <main>
-    <div>
-      <div style='width:400px;height:400px;'>
-        <p>問題：{{mondai}}</p>
-        <p>タイピング：{{typing}} => {{typingJP}} {{cheker}}</p>
+    <div style='border: solid;border-width: thin;'>
+      <div style='text-align:center;min-width:400px;border: solid;border-width: thin;'>
+        <div style='height:100px;margin:0px;'>
+          <p>これがうてるかな？</p>
+          <p style='font-size:20px;'>{{mondai_disp}}</p>
+          <span class='mondai'>『{{mondai}}』</span>
+        </div>
+        <div style='display:flex;margin:0 100px;padding-top:10px;font-size:20px;'>
+          <div :class='hit' style="width:100px;margin-left: auto;margin-right: auto;">あ た り！</div>
+          <div :class='miss' style="width:100px;margin-left: auto;margin-right: auto;">は ず れ！</div>
+        </div>
+      </div>
+      <div style='width:min-400px;height:150px;border: solid;border-width: thin;'>
+        <p>タイピング：{{typing}} => {{typingJP}}</p>
         <p>答え：{{answer}}</p>
       </div>
     </div>
@@ -67,8 +77,10 @@ register_shutdown_function('shutdown');
         const typing=ref('')
         const typingJP=ref('')
         const answer=ref('')
-        const cheker=ref('')
+        const hit=ref('')
+        const miss=ref('')
         let chk_flg=false
+        //ローマ字変換表
         const henkanhyou = ref([
           {'eng':'A', 'jp':'あ'},
           {'eng':'I', 'jp':'い'},
@@ -273,6 +285,10 @@ register_shutdown_function('shutdown');
           {'eng':'WHO', 'jp':'うぉ'},
           {'eng':'-', 'jp':'ー'}
         ])
+        const hitmiss_cleare=()=>{
+          miss.value=''
+          hit.value=''
+        }
         const onKeyPress = (e) =>{
           console.log('onKeyPress start')
           console.log(e)
@@ -294,21 +310,20 @@ register_shutdown_function('shutdown');
           if(chk_flg){
             typing.value=''
             typingJP.value=''
-            cheker.value=''
             chk_flg=false
           }
           //アルファベット判定
           if(check_answer(e.key)){
             typingJP.value = e.key
             answer.value = answer.value + e.key
-            //typing.value = ''
-            cheker.value = 'hit!!'
+            hit.value='buruburu'
+            setTimeout(hitmiss_cleare, 200);
             chk_flg=true
             return 0
           }
-
           typing.value = typing.value + event.key
 
+          //ひらがな判定
           let jp = get_moji(typing.value)
           console.log(jp)
           if(jp[0]===true){
@@ -316,29 +331,52 @@ register_shutdown_function('shutdown');
             if(check_answer(jp[1])){
               answer.value = answer.value + jp[1]
               chk_flg=true
-              cheker.value = 'hit!!'
+              hit.value='buruburu'
             }else{
-              cheker.value = 'miss!!'
+              miss.value='buruburu'
+              typing.value = ''
             }
-            
-            //typing.value = ''
+            setTimeout(hitmiss_cleare, 200);
+          }
+          //アルファベット4文字以上はミス
+          if(typing.value.length>=4){
+              miss.value='buruburu'
+              typing.value = ''
+              setTimeout(hitmiss_cleare, 200);
+          }
+          //次の問題
+          if(mondai.value===''){
+            if(get_next_task()==='finish'){
+
+            }
           }
         }
-        const get_moji = (key) => {
+
+        const get_moji = (key) => {//ローマ文字変換
           console.log('get_moji [' + key + ']')
           let moji = ([])
+          let loc_key = key
+          let ttu = ''  //っ
+          //小さい「つ」の判定
+          if(loc_key.length>=2){
+            if(loc_key.substr(0,1)===loc_key.substr(1,1)){
+              loc_key=loc_key.substr(1,loc_key.length-1)
+              ttu = 'っ'
+            }
+          }
           moji = henkanhyou.value.filter((record) => {
-            return (record.eng.toUpperCase() === key.toUpperCase());
+            return (record.eng.toUpperCase() === loc_key.toUpperCase());
           })
           if(moji.length===0){
             return [false,key]
           }else{
-            return [true,moji[0].jp]
+            return [true,ttu + moji[0].jp]
           }
         }
 
-       const mondai=ref('ちゃーちゃをうてるかな')
-       const check_answer = (moji) =>{
+        const mondai_disp=ref('河童の川流れ')
+        const mondai=ref('かっぱのかわながれ')
+        const check_answer = (moji) =>{
         let mojisu = moji.length
         if(mondai.value.substr(0,mojisu) === moji){
           console.log('hit!')
@@ -347,14 +385,17 @@ register_shutdown_function('shutdown');
           }else{
             mondai.value = mondai.value.slice((mondai.value.length - mojisu) * (-1))
           }
-          
           return true
         }else{
           console.log('miss!')
-          
           return false
         }
-      }
+        }
+        const get_next_task=()=>{
+          typingJP.value=''
+          mondai.value = 'いけ！たんじろう'
+          return 'finish'
+        }
 
 
         onMounted(()=>{
@@ -366,7 +407,9 @@ register_shutdown_function('shutdown');
           typingJP,
           mondai,
           answer,
-          cheker,
+          hit,
+          miss,
+          mondai_disp,
         }
       }
     }).mount('#app');
