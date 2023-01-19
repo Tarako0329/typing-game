@@ -50,16 +50,6 @@ $time=date('Ymd-His');
 	<div  id='app'>
 	<header>
 		<h1>タイピング、やろ～よ</h1>
-		<div style='text-align:center;'>
-		<select v-model='level' @change='get_mondai_List()' class='form-select' style='width:100px;'>
-			<option value=1>れべる１</option>
-			<option value=2>れべる２</option>
-			<option value=3>れべる３</option>
-			<option value=4>れべる４</option>
-			<option value=5>れべる５</option>
-			<option value=6>れべる５</option>
-		</select>
-		</div>
 	</header>
 	<main>
 		<div v-if='miss' class='buruburu' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
@@ -82,6 +72,14 @@ $time=date('Ymd-His');
 			</div>
 			<div style='text-align:center;border: solid;border-width: thin;padding:5px 20px;'>答え：{{answer}}</div>
 			<div style='text-align:center;padding:5px 0px'>
+				<select v-model='level' @change='get_mondai_List()' class='form-select' style='width:100px;margin:5px 335px;'>
+					<option value=1>れべる１</option>
+					<option value=2>れべる２</option>
+					<option value=3>れべる３</option>
+					<option value=4>れべる４</option>
+					<option value=5>れべる５</option>
+					<option value=6>れべる５</option>
+				</select>
 				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>スタート！</button>
 			</div>
 		</div>
@@ -97,7 +95,8 @@ $time=date('Ymd-His');
 				const answer=ref('')
 				const hit=ref(false)
 				const miss=ref(false)
-				let chk_flg=false
+				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
+				let finish_flg=true	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
 				//ローマ字変換表
 				const henkanhyou = ref([
 					{'eng':'A', 'jp':'あ'},
@@ -309,6 +308,10 @@ $time=date('Ymd-His');
 				}
 				const onKeyPress = (e) =>{
 					console.log('onKeyPress start')
+					if(finish_flg===true){
+						console.log('onKeyPress スタートボタンで有効になります')
+						return 0
+					}
 					console.log(e)
 					if(chk_flg){
 						typing.value=''
@@ -438,12 +441,13 @@ $time=date('Ymd-His');
 				const timer_viewer = ref('60')
 				const start_btn = () =>{
 					get_next_task()
+					finish_flg=false
 					let now = new Date()
 					let target_time = new Date(now.getTime() + 60000)	//60秒後
 					const timerId = setInterval(()=>{
 						if(timer(target_time.getTime())){
 							clearInterval(timerId)
-							document.addEventListener('keydown', ()=>{return 0})
+							finish_flg = true
 							timer_viewer.value=0
 						}
 					},100,)
