@@ -25,7 +25,7 @@ div{
 }
 body{
 		font-family:var(--main-font);
-		font-size:15px;
+		font-size:13px;
 }
 
 .line-green{
@@ -54,7 +54,7 @@ html{
 		touch-action: manipulation; /*スマフォのダブルタップによるズームを防ぐ*/
 }
 header{
-		height: 50px; /* 高さを70pxに指定 */
+		height: 80px; 
 		padding: 10px 2px; /* ヘッダーに上下左右それぞれ余白を指定 */
 		box-sizing: border-box; /* padding分を含んで幅を100%にするため */
 		width: 100%;
@@ -74,7 +74,6 @@ header{
 	font-family: 'M PLUS Rounded 1c', sans-serif;
 }
 .buruburu{
-	display: inline-block;
 	animation: hurueru .1s  infinite;
 	color:red;
 }
