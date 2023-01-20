@@ -46,7 +46,7 @@ $time=date('Ymd-His');
 	</script>    <!--ページ専用CSS-->
 	<TITLE>タイピング、やろ～よ</TITLE>
 </head>
-<body style='width:900px;'>
+<body style='width:100%;min-width:900px;text-align:center;'>
 	<div  id='app'>
 	<header>
 		<h1>タイピング、やろ～よ</h1>
@@ -54,27 +54,44 @@ $time=date('Ymd-His');
 	<main>
 		<div v-if='miss' class='buruburu' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
 		<div v-if='hit' class='' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
-		<div style='position:fixed;top:210px;right:50px;font-size:25px;'>とくてん：<span style='color:red'>{{score}}</span></div>
+		<!--<div style='position:fixed;top:210px;left:50px;font-size:25px;'>とくてん：<span style='color:red'>{{score}}</span></div>-->
 
 		<div style='border: solid;border-width: thin;'>
 			<div style='text-align:center;border: solid;border-width: thin;padding:10px 0'>
-				<div style='height:130px;margin:0px;'>
+				<div style='height:160px;margin:0px;'>
 					<p>これがうてるかな？</p>
-					<p style='font-size:25px;'>{{mondai_disp}}</p>
-					<p>{{mondai_roma}}</p>
-					<span class='mondai'>『{{mondai}}』</span>
+					<p style='font-size:20px;'>{{mondai_disp}}</p><!--漢字-->
+					<p class='mondai kana' style='font-size:16px;'>『{{mondai}}』</p><!--ひらがな-->
+					<br>
+					<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>{{mondai_roma}}</p><!--アルファベット-->
+					<template v-if='mondai_roma===""' >
+						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span> >>> 
+						<span class='romaji' style='font-size:23px;'>{{get_romaji[1]}}</span><!--アルファベット-->
+					</template>
 				</div>
 				<div style='height:50px;padding-top:5px;'>
 					<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
+					　
+					<span style=''>とくてん：<span style='font-size:20px;color:red'>{{score}}</span></span>
 				</div>
 			</div>
-			<div style='display:flex;height:50px;border: solid;border-width: thin;padding:5px 200px;'>
+			<!--
+			<div style='text-align:center;display:flex;height:50px;border: solid;border-width: thin;padding:5px 200px;'>
 				<div style='width:100px;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
-				<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
+				<div class='romaji' style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
 				<div style='width:50px;margin:0;text-align:center;color:blue;padding-top:10px;'> >>> </div>
 				<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
 			</div>
-			<div style='text-align:center;border: solid;border-width: thin;padding:5px 20px;'>答え：{{answer}}</div>
+			-->
+			<div style='min-height:50px;border: solid;border-width: thin;padding:5px 200px;'>
+				<div style='width:100%;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
+				<div style='display:flex; justify-content:center;'>
+					<div class='romaji' style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
+					<div style='width:50px;margin:0;text-align:center;color:blue;padding-top:10px;'> >>> </div>
+					<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
+				</div>
+			</div>
+			<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;'>{{answer}}</div>
 			<div style='text-align:center;padding:15px 0px'>
 				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>スタート！</button>
 				<select v-model='level' @change='get_mondai_List()' class='form-select' style='width:150px;margin:10px 315px;'>
@@ -92,9 +109,9 @@ $time=date('Ymd-His');
 		const { createApp, ref, onMounted, computed, VueCookies } = Vue;
 		createApp({
 			setup(){
-				const typing=ref('')
-				const typingJP=ref('')
-				const answer=ref('')
+				const typing=ref('kkya')
+				const typingJP=ref('っきゃ')
+				const answer=ref('きゃっきゃうふふ')
 				const hit=ref(false)
 				const miss=ref(false)
 				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
@@ -413,11 +430,38 @@ $time=date('Ymd-His');
 							return false
 						}
 				}
+				const get_romaji = computed(()=>{
+					let moji = ([])
+					let start = 0
+					if(mondai.value.substr(0,1)==="っ"){
+						start = 1
+					}
+					//きゃ等の2文字をチェック
+					moji = henkanhyou.value.filter((record) => {
+						return (record.jp === mondai.value.substr(start,2))
+					})
+
+					if(moji.length===0){//きゃ等の2文字がなかったら一文字をチェック
+						moji = henkanhyou.value.filter((record) => {
+							return (record.jp === mondai.value.substr(start,1))
+						})
+					}
+					if(moji.length===0){
+						return [mondai.value.substr(0,1),mondai.value.substr(0,1)]	//問題自体がアルファベット
+					}else{
+						if(start===0){
+							return [moji[0].jp,moji[0].eng]
+						}else{
+							return ["っ"+moji[0].jp,moji[0].eng.substr(0,1) + moji[0].eng]
+						}
+						
+					}
+				})
 
 				//出題機能
-				const mondai_disp=ref('　')   //漢字読み
-				const mondai=ref('　')        //ひらがな
-				const mondai_roma=ref('　')   //ローマ字
+				const mondai_disp=ref('レベルをえらんでね')   //漢字読み
+				const mondai=ref('')        //ひらがな
+				const mondai_roma=ref('')   //ローマ字
 				const mondai_list = ref([])		//問題リスト
 				const level = ref('1')
 				const get_mondai_List = () => {//問題リスト取得ajax
@@ -495,7 +539,7 @@ $time=date('Ymd-His');
 					level,
 					get_mondai_List,
 					score,
-					
+					get_romaji,
 				}
 			}
 		}).mount('#app');

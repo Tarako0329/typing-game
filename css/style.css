@@ -26,6 +26,7 @@ div{
 body{
 		font-family:var(--main-font);
 		font-size:13px;
+		background-color: #bbe2f1;
 }
 
 .line-green{
@@ -52,6 +53,7 @@ html{
 		box-sizing: border-box;
 		font-size: 62.5%; /*ルートサイズ10px=1rem算出をしやすくするために*/
 		touch-action: manipulation; /*スマフォのダブルタップによるズームを防ぐ*/
+		background-color: #bee0ce;
 }
 header{
 		height: 80px; 
@@ -71,7 +73,15 @@ header{
 	background-color: #40E0D0;
 	margin:0 10px;
 	letter-spacing:2px;
+}
+.kana{
 	font-family: 'M PLUS Rounded 1c', sans-serif;
+	font-weight: 900;
+}
+.romaji{
+	font-family: 'M PLUS Rounded 1c', sans-serif;
+	font-weight: 900;
+	letter-spacing:3px;
 }
 .buruburu{
 	animation: hurueru .1s  infinite;
