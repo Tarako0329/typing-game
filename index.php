@@ -14,7 +14,6 @@ $time=date('Ymd-His');
 ?>
 <!DOCTYPE html>
 <html lang='ja'>
-
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 	<META http-equiv='Content-Type' content='text/html; charset=UTF-8'>
@@ -54,11 +53,12 @@ $time=date('Ymd-His');
 			<option value=2>れべる２</option>
 			<option value=3>れべる３</option>
 			<option value=4>れべる４</option>
+			<option value=5>れべる５</option>
 		</select>
 	</header>
 	<main>
-		<div v-if='miss' class='buruburu' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
-		<div v-if='hit' class='' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
+		<div v-if='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
+		<div v-if='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
 
 		<div style='border: solid;border-width: thin;'>
 			<div style='text-align:center;border: solid;border-width: thin;padding:10px 0'>
@@ -344,15 +344,22 @@ $time=date('Ymd-His');
 						return 0
 					}
 
+					typing.value = typing.value + e.key
 					//アルファベット判定
 					if(check_answer(e.key)){
 						typingJP.value = e.key
 						answer.value = answer.value + e.key
 						score.value++
 						chk_flg=true
+					    //次の問題
+					    if(mondai.value===''){
+					    	hit.value=true
+					    	if(get_next_task()==='finish'){
+    
+					    	}
+					    }
 						return 0
 					}
-					typing.value = typing.value + event.key
 
 					//ひらがな判定
 					let jp = get_moji(typing.value)
@@ -372,10 +379,10 @@ $time=date('Ymd-His');
 					}
 					//アルファベット4文字以上はミス
 					if(typing.value.length>=4){
-							miss.value=true
-							score.value--
-							chk_flg=true
-							setTimeout(hitmiss_cleare, 200);
+						miss.value=true
+						score.value--
+						chk_flg=true
+						setTimeout(hitmiss_cleare, 200);
 					}
 					//次の問題
 					if(mondai.value===''){
@@ -407,8 +414,9 @@ $time=date('Ymd-His');
 					}
 				}
 				const check_answer = (moji) =>{//タイピング内容の判定
-						let mojisu = moji.length
-						if(mondai.value.substr(0,mojisu) === moji){
+						let mojisu = moji.toString().length
+						let mondai_char = zenk2hank(mondai.value.substr(0,mojisu).toUpperCase())
+						if(mondai_char === moji.toUpperCase()){
 							console.log('hit!')
 							if(mondai.value.length-mojisu === 0){
 								mondai.value = ''
@@ -420,6 +428,11 @@ $time=date('Ymd-His');
 							console.log('miss!')
 							return false
 						}
+				}
+				const zenk2hank =(str)=>{
+				    return str.replace(/[０-９]/g,(s)=>{
+				        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
+				    })
 				}
 				const get_romaji = computed(()=>{
 					let moji = ([])
