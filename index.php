@@ -50,11 +50,16 @@ $time=date('Ymd-His');
 	<div  id='app'>
 	<header>
 		<h1>タイピング、やろ～よ</h1>
+		<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;margin-right:auto; margin-left:auto;'>
+			<option value=1>れべる１</option>
+			<option value=2>れべる２</option>
+			<option value=3>れべる３</option>
+			<option value=4>れべる４</option>
+		</select>
 	</header>
 	<main>
 		<div v-if='miss' class='buruburu' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
 		<div v-if='hit' class='' style='text-align:center;position:fixed;top:80px;left:300px;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
-		<!--<div style='position:fixed;top:210px;left:50px;font-size:25px;'>とくてん：<span style='color:red'>{{score}}</span></div>-->
 
 		<div style='border: solid;border-width: thin;'>
 			<div style='text-align:center;border: solid;border-width: thin;padding:10px 0'>
@@ -65,24 +70,17 @@ $time=date('Ymd-His');
 					<br>
 					<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>{{mondai_roma}}</p><!--アルファベット-->
 					<template v-if='mondai_roma===""' >
-						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span> >>> 
-						<span class='romaji' style='font-size:23px;'>{{get_romaji[1]}}</span><!--アルファベット-->
+					<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
+						　　>>>　　
+						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span>
 					</template>
 				</div>
 				<div style='height:50px;padding-top:5px;'>
 					<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
 					　
-					<span style=''>とくてん：<span style='font-size:20px;color:red'>{{score}}</span></span>
+					<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
 				</div>
 			</div>
-			<!--
-			<div style='text-align:center;display:flex;height:50px;border: solid;border-width: thin;padding:5px 200px;'>
-				<div style='width:100px;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
-				<div class='romaji' style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
-				<div style='width:50px;margin:0;text-align:center;color:blue;padding-top:10px;'> >>> </div>
-				<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
-			</div>
-			-->
 			<div style='min-height:50px;border: solid;border-width: thin;padding:5px 200px;'>
 				<div style='width:100%;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
 				<div style='display:flex; justify-content:center;'>
@@ -91,15 +89,9 @@ $time=date('Ymd-His');
 					<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
 				</div>
 			</div>
-			<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;'>{{answer}}</div>
+			<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;background-color:#fff;'>{{answer}}</div>
 			<div style='text-align:center;padding:15px 0px'>
 				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
-				<select v-model='level' @change='get_mondai_List()' class='form-select' style='width:150px;margin:10px 315px;'>
-					<option value=1>れべる１</option>
-					<option value=2>れべる２</option>
-					<option value=3>れべる３</option>
-					<option value=4>れべる４</option>
-				</select>
 			</div>
 		</div>
 	</main>
@@ -109,9 +101,9 @@ $time=date('Ymd-His');
 		const { createApp, ref, onMounted, computed, VueCookies } = Vue;
 		createApp({
 			setup(){
-				const typing=ref('kkya')
-				const typingJP=ref('っきゃ')
-				const answer=ref('きゃっきゃうふふ')
+				const typing=ref('')
+				const typingJP=ref('')
+				const answer=ref('')
 				const hit=ref(false)
 				const miss=ref(false)
 				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
@@ -321,7 +313,7 @@ $time=date('Ymd-His');
 					{'eng':'WHO', 'jp':'うぉ'},
 					{'eng':'-', 'jp':'ー'}
 				])
-				const score = ref(100)
+				const score = ref(0)
 				const hitmiss_cleare=()=>{
 					miss.value=false
 					hit.value=false
@@ -459,7 +451,7 @@ $time=date('Ymd-His');
 				})
 
 				//出題機能
-				const mondai_disp=ref('レベルをえらんでね')   //漢字読み
+				const mondai_disp=ref('')   //漢字読み
 				const mondai=ref('')        //ひらがな
 				const mondai_roma=ref('')   //ローマ字
 				const mondai_list = ref([])		//問題リスト
@@ -485,13 +477,15 @@ $time=date('Ymd-His');
 				}
 
 				const timer_viewer = ref('60')
-				let timelimit = 0
 				const btn_name = ref('スタート')
+
+				let timelimit = 0
+				let timerId
 				const start_btn = () =>{
 					if(btn_name.value==='リセット'){
 						clearInterval(timerId)
+						timer_viewer.value=timelimit/1000
 						finish_flg = true
-						miri_sec = timelimit
 						btn_name.value='スタート'
 						return
 					}
@@ -510,11 +504,12 @@ $time=date('Ymd-His');
 					let now = new Date()
 					let target_time = new Date(now.getTime() + miri_sec)	//60秒後
 					btn_name.value = 'リセット'
-					const timerId = setInterval(()=>{
+					timerId = setInterval(()=>{
 						if(timer(target_time.getTime())){
 							clearInterval(timerId)
 							finish_flg = true
 							timer_viewer.value=0
+							btn_name.value='スタート'
 						}
 					},100,)
 				}
