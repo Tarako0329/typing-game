@@ -33,7 +33,6 @@ $time=date('Ymd-His');
 	<script src="https://unpkg.com/vue-cookies@1.8.2/vue-cookies.js"></script>
 	<!--ajaxライブラリ-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-	<!--<script>axios.defaults.baseURL = <?php //echo "'".ROOT_URL."'" ?>;</script>-->
 	<link rel='manifest' href='manifest.webmanifest'>
 	<script>
 			if('serviceWorker' in navigator){
