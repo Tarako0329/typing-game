@@ -93,7 +93,7 @@ $time=date('Ymd-His');
 			</div>
 			<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;'>{{answer}}</div>
 			<div style='text-align:center;padding:15px 0px'>
-				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>スタート！</button>
+				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
 				<select v-model='level' @change='get_mondai_List()' class='form-select' style='width:150px;margin:10px 315px;'>
 					<option value=1>れべる１</option>
 					<option value=2>れべる２</option>
@@ -486,7 +486,15 @@ $time=date('Ymd-His');
 
 				const timer_viewer = ref('60')
 				let timelimit = 0
+				const btn_name = ref('スタート')
 				const start_btn = () =>{
+					if(btn_name.value==='リセット'){
+						clearInterval(timerId)
+						finish_flg = true
+						miri_sec = timelimit
+						btn_name.value='スタート'
+						return
+					}
 					get_next_task()
 					let miri_sec
 					
@@ -501,6 +509,7 @@ $time=date('Ymd-His');
 					finish_flg=false
 					let now = new Date()
 					let target_time = new Date(now.getTime() + miri_sec)	//60秒後
+					btn_name.value = 'リセット'
 					const timerId = setInterval(()=>{
 						if(timer(target_time.getTime())){
 							clearInterval(timerId)
@@ -540,6 +549,7 @@ $time=date('Ymd-His');
 					get_mondai_List,
 					score,
 					get_romaji,
+					btn_name,
 				}
 			}
 		}).mount('#app');
