@@ -74,6 +74,9 @@ $time=date('Ymd-His');
 						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span>
 					</template>
 				</div>
+				<div>
+					<img :src = '`img/${player_img}`' height='100'>
+				</div>
 				<div style='height:50px;padding-top:5px;'>
 					<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
 					　
@@ -105,6 +108,7 @@ $time=date('Ymd-His');
 				const answer=ref('')
 				const hit=ref(false)
 				const miss=ref(false)
+				
 				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
 				let finish_flg=true	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
 				//ローマ字変換表
@@ -253,7 +257,7 @@ $time=date('Ymd-His');
 					{'eng':'THO', 'jp':'てょ'},
 					{'eng':'TWA', 'jp':'とぁ'},
 					{'eng':'TWI', 'jp':'とぃ'},
-					{'eng':'TWO', 'jp':'とぅ'},
+					{'eng':'TWU', 'jp':'とぅ'},
 					{'eng':'TWE', 'jp':'とぇ'},
 					{'eng':'TWO', 'jp':'とぉ'},
 					{'eng':'DYA', 'jp':'ぢゃ'},
@@ -312,6 +316,8 @@ $time=date('Ymd-His');
 					{'eng':'WHO', 'jp':'うぉ'},
 					{'eng':'-', 'jp':'ー'}
 				])
+
+				//タイピング判定関連
 				const score = ref(0)
 				const hitmiss_cleare=()=>{
 					miss.value=false
@@ -370,6 +376,7 @@ $time=date('Ymd-His');
 							answer.value = answer.value + jp[1]
 							chk_flg=true
 							score.value++
+							get_ramd_index()
 						}else{
 							miss.value=true
 							score.value--
@@ -429,7 +436,7 @@ $time=date('Ymd-His');
 							return false
 						}
 				}
-				const zenk2hank =(str)=>{
+				const zenk2hank =(str)=>{//全角数字の半角変換
 				    return str.replace(/[０-９]/g,(s)=>{
 				        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
 				    })
@@ -462,6 +469,26 @@ $time=date('Ymd-His');
 					}
 				})
 
+				//格闘
+				const player_actions = ['002.png','003.png','004.png','005.png','006.png','007.png','008.png','009.png','010.png']	//idx[0:静止,1:ダメージ　,2～攻撃]
+				const player_img=ref('001.png')
+				const enemy = ref([''])	//idx[0:静止,1:ダメージ　,2:攻撃]
+				const get_ramd_index = async (m_index)=>{
+					console.log('get_ramd_index start')
+					let img = player_actions[Math.floor( Math.random() * 9 )]
+					if(player_img.value===img){
+						player_img.value = '001.png'
+						await sleep(50)
+					}
+					player_img.value = img
+					console.log(player_img.value)
+				}
+				function sleep(msec) {
+   				return new Promise(function(resolve) {
+			      setTimeout(function() {resolve()}, msec);
+		   		})
+				}
+
 				//出題機能
 				const mondai_disp=ref('')   //漢字読み
 				const mondai=ref('')        //ひらがな
@@ -478,7 +505,7 @@ $time=date('Ymd-His');
 						.then((response) => (mondai_list.value = [...response.data]))
 						.catch((error) => console.log(`get_mondai_List ERROR:${error}`));
 				}//問題リスト取得ajax
-				const get_next_task=()=>{   //次の問題を取得
+				const get_next_task=()=>{   //次の問題をrandomで取得
 						console.log('get_next_task start')
 						answer.value=''
 						let index = Math.floor( Math.random() * mondai_list.value.length );
@@ -488,6 +515,7 @@ $time=date('Ymd-His');
 						mondai_roma.value = mondai_list.value[index].roma
 				}
 
+				//startボタン関連
 				const timer_viewer = ref('60')
 				const btn_name = ref('スタート')
 
@@ -557,6 +585,7 @@ $time=date('Ymd-His');
 					score,
 					get_romaji,
 					btn_name,
+					player_img,
 				}
 			}
 		}).mount('#app');
