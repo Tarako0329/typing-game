@@ -59,6 +59,7 @@ $time=date('Ymd-His');
 	<main>
 		<div v-if='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
 		<div v-if='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
+		<div v-if=ture class='wrap' style='text-align:center;width:600px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
 
 		<div style='border: solid;border-width: thin;'>
 			<div style='text-align:center;border: solid;border-width: thin;padding:10px 0'>
@@ -76,6 +77,7 @@ $time=date('Ymd-His');
 				</div>
 				<div>
 					<img :src = '`img/${player_img}`' height='100'>
+					<img :src = '`img/${enemy_img}`' height='100'>
 				</div>
 				<div style='height:50px;padding-top:5px;'>
 					<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
@@ -314,6 +316,9 @@ $time=date('Ymd-His');
 					{'eng':'WI', 'jp':'うぃ'},
 					{'eng':'WE', 'jp':'うぇ'},
 					{'eng':'WHO', 'jp':'うぉ'},
+					{'eng':'lya', 'jp':'ゃ'},
+					{'eng':'lyu', 'jp':'ゅ'},
+					{'eng':'lyo', 'jp':'ょ'},
 					{'eng':'-', 'jp':'ー'}
 				])
 
@@ -470,18 +475,24 @@ $time=date('Ymd-His');
 				})
 
 				//格闘
-				const player_actions = ['002.png','003.png','004.png','005.png','006.png','007.png','008.png','009.png','010.png']	//idx[0:静止,1:ダメージ　,2～攻撃]
-				const player_img=ref('001.png')
-				const enemy = ref([''])	//idx[0:静止,1:ダメージ　,2:攻撃]
+				const player_actions = ['p_kick01.png','p_kick02.png','p_kick03.png','p_panchi.png']	//idx[0:静止,1:ダメージ　,2～攻撃]
+				const player_img=ref('p_kamae.png')
+				const enemy_actions = ['']	//idx[0:静止,1:ダメージ　,2:攻撃]
+				const enemy_img=ref('teki_kamae.png')
 				const get_ramd_index = async (m_index)=>{
 					console.log('get_ramd_index start')
-					let img = player_actions[Math.floor( Math.random() * 9 )]
+					let img = player_actions[Math.floor( Math.random() * 4 )]
+					/*
 					if(player_img.value===img){
 						player_img.value = '001.png'
 						await sleep(50)
 					}
+					*/
 					player_img.value = img
-					console.log(player_img.value)
+					enemy_img.value = 'teki_damaig01.png'
+					await sleep(200)
+					enemy_img.value = 'teki_kamae.png'
+					//player_img.value = 'p_kamae.png'
 				}
 				function sleep(msec) {
    				return new Promise(function(resolve) {
@@ -586,6 +597,7 @@ $time=date('Ymd-His');
 					get_romaji,
 					btn_name,
 					player_img,
+					enemy_img,
 				}
 			}
 		}).mount('#app');
