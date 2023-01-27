@@ -46,7 +46,7 @@ $time=date('Ymd-His');
 </head>
 <body style='width:100%;min-width:900px;text-align:center;'>
 	<div  id='app'>
-	<header>
+	<header> 
 		<h1>タイピング、やろ～よ</h1>
 		<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;margin-right:auto; margin-left:auto;'>
 			<option value=1>れべる１</option>
