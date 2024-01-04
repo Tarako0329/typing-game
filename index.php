@@ -17,6 +17,7 @@ $time=date('Ymd-His');
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 	<META http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	<meta name="description" content="webで遊べる！すぐに遊べる！無料で無制限タイピングゲーム。こどもから大人まで、気軽にどうぞ～">
 	<link rel='apple-touch-icon' href='apple-touch-icon.png'>
 	<!-- Bootstrap5 CSS/js -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -28,7 +29,7 @@ $time=date('Ymd-His');
 	<!--サイト共通-->
 	<link rel='stylesheet' href='css/style.css?<?php echo $time; ?>' >
 	<!--Vue.js-->
-	<script src="https://unpkg.com/vue@next"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@3.4.4"></script>
 	<script src="https://unpkg.com/vue-cookies@1.8.2/vue-cookies.js"></script>
 	<!--ajaxライブラリ-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -42,7 +43,7 @@ $time=date('Ymd-His');
 			//スマフォで:active :hover を有効に
 			document.getElementsByTagName('html')[0].setAttribute('ontouchstart', '');
 	</script>    <!--ページ専用CSS-->
-	<TITLE>タイピング、やろ～よ</TITLE>
+	<TITLE>【無料タイピングゲーム】タイピング、やろ～よ</TITLE>
 </head>
 <body style='width:100%;min-width:900px;text-align:center;'>
 	<div  id='app'>
