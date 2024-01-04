@@ -1,1 +1,5 @@
 ver1.00.0:vue3cdn修正
+
+cd /home/ifduktdo/public_html/training
+git fetch --all
+git reset --hard origin/master
