@@ -1,4 +1,4 @@
-ver1.00.0:vue3cdn修正
+ver1.00.0:vue3cdn修正test
 
 cd /home/pcntfsrg/public_html/games/typing-game
 git fetch --all
