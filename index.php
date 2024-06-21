@@ -17,6 +17,7 @@ $time=date('Ymd-His');
 <head>
 	<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 	<META http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	<meta name="google-site-verification" content="Ti3a9WFQOPYTR_HHzZ2jtft_iw_RN3xK_ydPCS0EpfQ" />
 	<meta name="description" content="webで遊べる！すぐに遊べる！無料で無制限タイピングゲーム。こどもから大人まで、気軽にどうぞ～">
 	<link rel='apple-touch-icon' href='apple-touch-icon.png'>
 	<!-- Bootstrap5 CSS/js -->
