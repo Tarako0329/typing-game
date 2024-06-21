@@ -34,6 +34,8 @@ $time=date('Ymd-His');
 	<script src="https://unpkg.com/vue-cookies@1.8.2/vue-cookies.js"></script>
 	<!--ajaxライブラリ-->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+	<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+	<script src="hanabi.js?<?php echo $time; ?>"></script>
 	<link rel='manifest' href='manifest.webmanifest'>
 	<script>
 			if('serviceWorker' in navigator){
@@ -41,8 +43,6 @@ $time=date('Ymd-His');
 							console.log("Service Worker is registered!!");
 					});
 			}
-			//スマフォで:active :hover を有効に
-			document.getElementsByTagName('html')[0].setAttribute('ontouchstart', '');
 	</script>    <!--ページ専用CSS-->
 	<TITLE>【無料タイピングゲーム】タイピング、やろ～よ</TITLE>
 </head>
@@ -58,48 +58,54 @@ $time=date('Ymd-His');
 			<option value=5>れべる５</option>
 		</select>
 	</header>
-	<main>
-		<div v-if='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
-		<div v-if='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
-		<div v-if=ture class='wrap' style='text-align:center;width:600px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
+	<main class='container'>
+		<div v-show='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
+		<div v-show='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
+		<div v-show='finish_flg===true' class='wrap' style='text-align:center;width:600px;height:300px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
 
-		<div style='border: solid;border-width: thin;'>
-			<div style='text-align:center;border: solid;border-width: thin;padding:10px 0'>
-				<div style='height:160px;margin:0px;'>
+		<div style='border: solid;border-width: thin;padding:10px;'>
+			<div style='width:100%;height:250px;' id='canv_div'>
+				<canvas id="testCanvas" width="100%" height="250px"></canvas>
+			</div>
+			<div style='text-align:center;'>
+				<div style='height:40px;margin:0px;'>
 					<p>これがうてるかな？</p>
-					<p style='font-size:20px;'>{{mondai_disp}}</p><!--漢字-->
-					<p class='mondai kana' style='font-size:16px;'>『{{mondai}}』</p><!--ひらがな-->
-					<br>
-					<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>{{mondai_roma}}</p><!--アルファベット-->
+				</div>
+				<div class='pt-1' style='height:60px;margin:0px;background:white;'>
+					<p style='font-size:24px;'>　{{mondai_disp}}　</p><!--漢字-->
+				</div>
+				<div class='mondai kana' style='margin:0px;'>
+					<p style='font-size:16px;'>　{{mondai}}　</p><!--ひらがな-->
+				</div>
+				<div class='mt-5' style='height:100px;'>
+					<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>　{{mondai_roma}}　</p><!--アルファベット-->
 					<template v-if='mondai_roma===""' >
 					<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
 						　　>>>　　
 						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span>
 					</template>
 				</div>
-				<div>
-					<img :src = '`img/${player_img}`' height='100'>
-					<img :src = '`img/${enemy_img}`' height='100'>
-				</div>
-				<div style='height:50px;padding-top:5px;'>
-					<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
-					　
-					<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
-				</div>
 			</div>
-			<div style='min-height:50px;border: solid;border-width: thin;padding:5px 200px;'>
-				<div style='width:100%;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
-				<div style='display:flex; justify-content:center;'>
-					<div class='romaji' style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
-					<div style='width:50px;margin:0;text-align:center;color:blue;padding-top:10px;'> >>> </div>
-					<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
-				</div>
-			</div>
-			<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;background-color:#fff;'>{{answer}}</div>
-			<div style='text-align:center;padding:15px 0px'>
-				<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
+			<div style='height:50px;padding-top:5px;'>
+				<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
+				　
+				<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
 			</div>
 		</div>
+		<hr>
+		<div style='min-height:50px;border: solid;border-width: thin;padding:5px 100px;'>
+			<div style='width:100%;margin:0;text-align:center;padding-top:10px;'>タイピング：</div>
+			<div style='display:flex; justify-content:center;'>
+				<div class='romaji' style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typing}}</div> 
+				<div style='width:50px;margin:0;text-align:center;color:blue;padding-top:10px;'> >>> </div>
+				<div style='width:70px;margin:0;font-size:20px;text-align:center;'>{{typingJP}}</div>
+			</div>
+		</div>
+		<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;background-color:#fff;'>{{answer}}</div>
+		<div style='text-align:center;padding:15px 0px'>
+			<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
+		</div>
+	</div>
 	</main>
 	<footer></footer>
 	</div>
@@ -114,9 +120,10 @@ $time=date('Ymd-His');
 				const miss=ref(false)
 				
 				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
-				let finish_flg=true	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
-				//ローマ字変換表
-				const henkanhyou = ref([
+				//let finish_flg=true;	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
+				const finish_flg=ref('X');	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
+					
+				const henkanhyou = ref([//ローマ字変換表
 					{'eng':'A', 'jp':'あ'},
 					{'eng':'I', 'jp':'い'},
 					{'eng':'U', 'jp':'う'},
@@ -332,7 +339,7 @@ $time=date('Ymd-His');
 				}
 				const onKeyPress = (e) =>{
 					console.log('onKeyPress start')
-					if(finish_flg===true){
+					if(finish_flg.value===true){
 						console.log('onKeyPress スタートボタンで有効になります')
 						return 0
 					}
@@ -384,6 +391,7 @@ $time=date('Ymd-His');
 							chk_flg=true
 							score.value++
 							get_ramd_index()
+							typeSuccess()
 						}else{
 							miss.value=true
 							score.value--
@@ -504,7 +512,7 @@ $time=date('Ymd-His');
 
 				//出題機能
 				const mondai_disp=ref('')   //漢字読み
-				const mondai=ref('')        //ひらがな
+				const mondai=ref(' ')        //ひらがな
 				const mondai_roma=ref('')   //ローマ字
 				const mondai_list = ref([])		//問題リスト
 				const level = ref('1')
@@ -530,15 +538,16 @@ $time=date('Ymd-His');
 
 				//startボタン関連
 				const timer_viewer = ref('60')
-				const btn_name = ref('スタート')
 
+				const btn_name = ref('スタート')
 				let timelimit = 0
 				let timerId
+
 				const start_btn = () =>{
 					if(btn_name.value==='リセット'){
 						clearInterval(timerId)
 						timer_viewer.value=timelimit/1000
-						finish_flg = true
+						finish_flg.value = true
 						btn_name.value='スタート'
 						return
 					}
@@ -553,14 +562,14 @@ $time=date('Ymd-His');
 					}
 					
 					score.value=0
-					finish_flg=false
+					finish_flg.value=false
 					let now = new Date()
 					let target_time = new Date(now.getTime() + miri_sec)	//60秒後
 					btn_name.value = 'リセット'
 					timerId = setInterval(()=>{
 						if(timer(target_time.getTime())){
 							clearInterval(timerId)
-							finish_flg = true
+							finish_flg.value = true
 							timer_viewer.value=0
 							btn_name.value='スタート'
 						}
@@ -572,6 +581,8 @@ $time=date('Ymd-His');
 					timer_viewer.value = (countdowm / 1000).toFixed(1)
 					if(timer_viewer.value<=0){
 						return true
+					}else{
+						return false
 					}
 				}
 				
@@ -579,6 +590,7 @@ $time=date('Ymd-His');
 				onMounted(()=>{
 					document.addEventListener('keydown', onKeyPress)
 					get_mondai_List()
+					
 				})
 				return{
 					typing,
@@ -588,6 +600,7 @@ $time=date('Ymd-His');
 					answer,
 					hit,
 					miss,
+					finish_flg,
 					mondai_disp,
 					mondai_list,
 					mondai_roma,
@@ -603,6 +616,7 @@ $time=date('Ymd-His');
 				}
 			}
 		}).mount('#app');
+		init();
 	</script>
 	<script>
 		// Enterキーが押された時にSubmitされるのを抑制する

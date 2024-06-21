@@ -4,9 +4,6 @@ font-family: 'M PLUS Rounded 1c', sans-serif;
 font-family: 'Reggae One', cursive;
 font-family: 'Rowdies', cursive;
 */
-div{
-	margin: 0px 20px;
-}
 :root {
 		/*--main-font:'Zen Kurenaido', sans-serif;*/
 		--main-font: 'Reggae One', cursive;
@@ -70,9 +67,10 @@ header{
 	/*font-size:20px;*/
 	font-weight: 900;
 	color:#FF0080;
-	background-color: #40E0D0;
+	background-color: #f9fafa;
 	margin:0 10px;
 	letter-spacing:2px;
+	height:30px;
 }
 .kana{
 	font-family: 'M PLUS Rounded 1c', sans-serif;
