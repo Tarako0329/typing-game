@@ -53,7 +53,7 @@ html{
 		background-color: #bee0ce;
 }
 header{
-		height: 80px; 
+		height: 115px; 
 		padding: 10px 2px; /* ヘッダーに上下左右それぞれ余白を指定 */
 		box-sizing: border-box; /* padding分を含んで幅を100%にするため */
 		width: 100%;

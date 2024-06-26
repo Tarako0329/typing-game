@@ -51,12 +51,13 @@ $time=date('Ymd-His');
 	<div  id='app'>
 	<header> 
 		<h1>タイピング、やろ～よ</h1>
+		<p>レベルをえらんでスタートボタンを押してください。</p>
 		<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;margin-right:auto; margin-left:auto;'>
-			<option value=1>れべる１</option>
-			<option value=2>れべる２</option>
-			<option value=3>れべる３</option>
-			<option value=4>れべる４</option>
-			<option value=5>れべる５</option>
+			<option value=1>レベル １</option>
+			<option value=2>レベル ２</option>
+			<option value=3>レベル ３</option>
+			<option value=4>レベル ４</option>
+			<option value=5>レベル ５</option>
 		</select>
 	</header>
 	<main class='container'>
@@ -69,8 +70,8 @@ $time=date('Ymd-His');
 				<canvas id="testCanvas" width="100%" height="250px"></canvas>
 			</div>
 			<div style='text-align:center;'>
-				<div style='height:40px;margin:0px;'>
-					<p>これがうてるかな？</p>
+				<div class='pt-3' style='height:40px;margin:0px;'>
+					<p>これがうてるかな----？</p>
 				</div>
 				<div class='pt-1' style='height:60px;margin:0px;background:white;'>
 					<p style='font-size:24px;'>　{{mondai_disp}}　</p><!--漢字-->
