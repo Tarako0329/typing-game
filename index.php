@@ -63,7 +63,8 @@ $time=date('Ymd-His');
 	<main class='container' style='min-width:800px;'>
 		<div v-show='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
 		<div v-show='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
-		<div v-show='finish_flg===true' class='wrap' style='text-align:center;width:600px;height:300px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
+		<div v-show='finish_flg==="finish"' class='wrap' style='text-align:center;width:600px;height:300px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
+		<div v-show='st_cnt_dwntimer_viewer<=3.6' class='wrap' style='text-align:center;width:600px;height:300px;font-size:100px;z-index:99;color:blue;'>{{st_cnt_dwntimer_viewer}}</div>
 
 		<div class='row d-flex'>
 			<div style='border: solid;border-width: thin;padding:10px;'>
@@ -80,7 +81,7 @@ $time=date('Ymd-His');
 					<div class='mondai kana' style='margin:0px;'>
 						<p style='font-size:16px;'>　{{mondai}}　</p><!--ひらがな-->
 					</div>
-					<div class='mt-5 text-center' style='height:100px;'>
+					<div class='mt-5 text-center' style='height:80px;'>
 						<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>　{{mondai_roma}}　</p><!--アルファベット-->
 						<template v-if='mondai_roma===""' >
 							<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
@@ -89,10 +90,12 @@ $time=date('Ymd-His');
 						</template>
 					</div>
 				</div>
-				<div style='height:50px;padding-top:5px;'>
-				<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
-				　
-				<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
+				<div style='height:70px;padding-top:5px;'>
+					<span>のこりじかん：</span>
+					<input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
+					　
+					<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
+					<div><button type='button' class='btn btn-danger mt-3' @click='ranking_mode()'>ランキングモードセット</button></div>
 				</div>
 			</div>
 		</div>
@@ -109,9 +112,147 @@ $time=date('Ymd-His');
 		<div style='text-align:center;padding:15px 0px'>
 			<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
 		</div>
-	</div>
+	
 	</main>
 	<footer></footer>
+	<!-- Modal -->
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id='rank_touroku'>
+	  Launch static backdrop modal
+	</button>
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="staticBackdropLabel">ランキング登録</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body p-5">
+					<div class="row text-start mb-3">
+					  <label for="nikname" class="form-label">ニックネーム</label>
+					  <input type="text" class="form-control" id="nikname" v-model='nik_name'>
+					</div>
+					<div class="row text-start mb-3">
+					  <label for="nendai" class="form-label">年代</label>
+					  <select class="form-select" id="nendai" v-model='nendai'>
+							<option value="ひみつ">ひみつ</option>
+							<option value="sha">社会人</option>
+							<option value="dai">大学生</option>
+							<option value="kou">高校生</option>
+							<option value="chu">中学生</option>
+							<option value="shou">小学生</option>
+							<option value="youji">５さい いか</option>
+						</select>
+					</div>
+					<div class="row text-start">
+					  <label for="area" class="form-label">都道府県</label>
+					  <select class="form-select" id="area" v-model='area'>
+							<option value="ひみつ">ひみつ</option>
+							<option value="北海道">	北海道	</option>
+							<option value="青森県">	青森県	</option>
+							<option value="岩手県">	岩手県	</option>
+							<option value="宮城県">	宮城県	</option>
+							<option value="秋田県">	秋田県	</option>
+							<option value="山形県">	山形県	</option>
+							<option value="福島県">	福島県	</option>
+							<option value="茨城県">	茨城県	</option>
+							<option value="栃木県">	栃木県	</option>
+							<option value="群馬県">	群馬県	</option>
+							<option value="埼玉県">	埼玉県	</option>
+							<option value="千葉県">	千葉県	</option>
+							<option value="東京都">	東京都	</option>
+							<option value="神奈川県">	神奈川県	</option>
+							<option value="新潟県">	新潟県	</option>
+							<option value="富山県">	富山県	</option>
+							<option value="石川県">	石川県	</option>
+							<option value="福井県">	福井県	</option>
+							<option value="山梨県">	山梨県	</option>
+							<option value="長野県">	長野県	</option>
+							<option value="岐阜県">	岐阜県	</option>
+							<option value="静岡県">	静岡県	</option>
+							<option value="愛知県">	愛知県	</option>
+							<option value="三重県">	三重県	</option>
+							<option value="滋賀県">	滋賀県	</option>
+							<option value="京都府">	京都府	</option>
+							<option value="大阪府">	大阪府	</option>
+							<option value="兵庫県">	兵庫県	</option>
+							<option value="奈良県">	奈良県	</option>
+							<option value="和歌山県">	和歌山県	</option>
+							<option value="鳥取県">	鳥取県	</option>
+							<option value="島根県">	島根県	</option>
+							<option value="岡山県">	岡山県	</option>
+							<option value="広島県">	広島県	</option>
+							<option value="山口県">	山口県	</option>
+							<option value="徳島県">	徳島県	</option>
+							<option value="香川県">	香川県	</option>
+							<option value="愛媛県">	愛媛県	</option>
+							<option value="高知県">	高知県	</option>
+							<option value="福岡県">	福岡県	</option>
+							<option value="佐賀県">	佐賀県	</option>
+							<option value="長崎県">	長崎県	</option>
+							<option value="熊本県">	熊本県	</option>
+							<option value="大分県">	大分県	</option>
+							<option value="宮崎県">	宮崎県	</option>
+							<option value="鹿児島県">	鹿児島県	</option>
+							<option value="沖縄県">	沖縄県	</option>
+						</select>
+					</div>
+				</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">とうろくしない</button>
+	        <button type="button" class="btn btn-primary" @click='ins_ranking' data-bs-dismiss="modal">とうろく</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ranking" id='ranking_disp'>
+	  Launch static backdrop modal
+	</button>
+	<div class="modal fade" id="ranking" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="staticBackdropLabel">ランキング</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body p-5">
+					<div class='mb-5'>
+						<template v-for='(list,index) in sougou_rank' :key='list.SEQ'>
+							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
+								<div class='col-2'>総合 {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+							<div v-else-if='list.guid===guid' class="row text-start mb-3"  style='color:red;' :id='list.SEQ'>
+								<div class='col-2'>総合 {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+						</template>
+					</div>
+					<div class='mb-5'>
+						<template v-for='(list,index) in nendai_rank' :key='list.SEQ'>
+							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
+								<div class='col-2'>{{list.nendai}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+							<div v-else-if='list.guid===guid' class="row text-start mb-3"  style='color:red;' :id='list.SEQ'>
+								<div class='col-2'>{{list.nendai}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+						</template>
+					</div>
+					<div class='mb-5'>
+						<template v-for='(list,index) in area_rank' :key='list.SEQ'>
+							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
+								<div class='col-2'>{{list.area}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+							<div v-else-if='list.guid===guid' class="row text-start mb-3"  style='color:red;' :id='list.SEQ'>
+								<div class='col-2'>{{list.area}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+							</div>
+						</template>
+					</div>
+				</div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">とじる</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 	</div>
 	<script>
 		const { createApp, ref, onMounted, computed, VueCookies } = Vue;
@@ -124,8 +265,7 @@ $time=date('Ymd-His');
 				const miss=ref(false)
 				
 				let chk_flg=false			//文字チェック、もしくはローマ字変換失敗時にtrueとなり、次回キータイプ時にタイピング内容をクリアする処理が走る
-				//let finish_flg=true;	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
-				const finish_flg=ref('X');	//カウントダウンタイマーが０になったらtrueとなり、keydownイベントをスキップする。スタートボタンが押されるとfalseとなる
+				const finish_flg=ref("wait");	//start or finish or wait
 					
 				const henkanhyou = ref([//ローマ字変換表
 					{'eng':'A', 'jp':'あ'},
@@ -343,7 +483,7 @@ $time=date('Ymd-His');
 				}
 				const onKeyPress = (e) =>{
 					console.log('onKeyPress start')
-					if(finish_flg.value===true){
+					if(finish_flg.value!=="start"){
 						console.log('onKeyPress スタートボタンで有効になります')
 						return 0
 					}
@@ -394,7 +534,7 @@ $time=date('Ymd-His');
 							answer.value = answer.value + jp[1]
 							chk_flg=true
 							score.value++
-							get_ramd_index()
+							//get_ramd_index()
 							typeSuccess()
 						}else{
 							miss.value=true
@@ -489,31 +629,25 @@ $time=date('Ymd-His');
 				})
 
 				//格闘
+				/*
 				const player_actions = ['p_kick01.png','p_kick02.png','p_kick03.png','p_panchi.png']	//idx[0:静止,1:ダメージ　,2～攻撃]
 				const player_img=ref('p_kamae.png')
 				const enemy_actions = ['']	//idx[0:静止,1:ダメージ　,2:攻撃]
-				const enemy_img=ref('teki_kamae.png')
-				const get_ramd_index = async (m_index)=>{
+				const enemy_img=ref('teki_kamae.png')*/
+				/*const get_ramd_index = async (m_index)=>{
 					console.log('get_ramd_index start')
 					let img = player_actions[Math.floor( Math.random() * 4 )]
-					/*
-					if(player_img.value===img){
-						player_img.value = '001.png'
-						await sleep(50)
-					}
-					*/
 					player_img.value = img
 					enemy_img.value = 'teki_damaig01.png'
 					await sleep(200)
 					enemy_img.value = 'teki_kamae.png'
-					//player_img.value = 'p_kamae.png'
-				}
+				}*/
 				function sleep(msec) {
    				return new Promise(function(resolve) {
 			      setTimeout(function() {resolve()}, msec);
 		   		})
 				}
-
+				
 				//出題機能
 				const mondai_disp=ref('')   //漢字読み
 				const mondai=ref(' ')        //ひらがな
@@ -541,28 +675,26 @@ $time=date('Ymd-His');
 				}
 
 				//startボタン関連
-				const timer_viewer = ref('60')
+				const timer_viewer = ref(60)
+				const st_cnt_dwntimer_viewer = ref(4)
 
 				const btn_name = ref('スタート')
 				let timelimit = 0
 				let timerId
 
 				const start_btn = () =>{
-					if(btn_name.value==='リセット'){
+					if(btn_name.value==='リセット'){//リセット時
 						clearInterval(timerId)
 						timer_viewer.value=timelimit/1000
-						finish_flg.value = true
-						setTimeout(function() {
-						  finish_flg.value = false
-						}, 3000)
+						finish_flg.value = "wait"
 
-						//mondai_list.value=[]
 						mondai.value=""
 						mondai_disp.value=""
 						mondai_roma.value=""
 						typing.value=""
 						typingJP.value=""
 						btn_name.value='スタート'
+						st_cnt_dwntimer_viewer.value = 4
 						return
 					}
 					get_next_task()
@@ -576,22 +708,43 @@ $time=date('Ymd-His');
 					}
 					
 					score.value=0
-					finish_flg.value=false
+					//finish_flg.value=false
 					let now = new Date()
 					let target_time = new Date(now.getTime() + miri_sec)	//60秒後
+					let cntdown_target_time = new Date(now.getTime() + 4000)	//60秒後
 					btn_name.value = 'リセット'
 					timerId = setInterval(()=>{
-						if(timer(target_time.getTime())){
+						if(timer(target_time.getTime(),cntdown_target_time.getTime())){
 							clearInterval(timerId)
-							finish_flg.value = true
+							finish_flg.value = "finish"
 							timer_viewer.value=0
+							st_cnt_dwntimer_viewer.value = 4
+							if(timelimit==60000 && score.value > 0){
+								//60秒以外は練習モード
+								setTimeout(function() {
+									document.getElementById("rank_touroku").click()
+								}, 3000)
+							}
+							setTimeout(function() {
+					  		finish_flg.value = "wait"
+							}, 3000)
+							
 							btn_name.value='スタート'
 						}
 					},100,)
 				}
 
-				const timer=(tt)=>{//タイマー
+				const timer=(tt,ctdn)=>{//タイマー
 					let now = new Date()
+					if(Number(st_cnt_dwntimer_viewer.value) > 0){
+						let start_count_down = (ctdn - now.getTime())
+						st_cnt_dwntimer_viewer.value = (start_count_down / 1000).toFixed(0)
+						return false
+					}else{
+						st_cnt_dwntimer_viewer.value=""
+						finish_flg.value="start"
+					}
+
 					let countdowm = (tt - now.getTime())
 					timer_viewer.value = (countdowm / 1000).toFixed(1)
 					if(timer_viewer.value<=0){
@@ -601,11 +754,72 @@ $time=date('Ymd-His');
 					}
 				}
 				
-				
+				const nik_name = ref('ひみつ')
+				const nendai = ref('ひみつ')
+				const area = ref('ひみつ')
+				const sougou_rank = ref([])
+				const nendai_rank = ref([])
+				const area_rank = ref([])
+				const guid = ref("")
+
+				const ranking_mode = () =>{
+					timer_viewer.value=60
+				}
+
+				const ins_ranking = () =>{
+					guid.value = GET_GUID()
+          const form = new FormData();
+          form.append(`nikname`, nik_name.value)
+          form.append(`score`, score.value)
+          form.append(`area`, area.value)
+          form.append(`nendai`, nendai.value)
+          form.append(`level`, level.value)
+          form.append(`guid`, guid.value)
+
+          axios.post("ajax_ins_ranking.php",form, {headers: {'Content-Type': 'multipart/form-data'}})
+          .then((response)=>{
+						console.log(response)
+						get_ranking()
+						document.getElementById("ranking_disp").click()
+          })
+          .catch((error,response)=>{
+						console.log(error)
+          })
+          .finally(()=>{
+
+          })
+				}
+				const get_ranking = () =>{
+					axios.get("ajax_get_ranking.php")
+          .then((response)=>{
+						console.log(response)
+						sougou_rank.value = response.data.sougou
+						nendai_rank.value = response.data.nendai
+						area_rank.value = response.data.area
+          })
+          .catch((error,response)=>{
+						console.log(error)
+          })
+          .finally(()=>{
+          })
+
+				}
+
+				const GET_GUID = () =>{//ランキングの特定に使用
+					let dt = new Date().getTime();
+					let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+							let r = (dt + Math.random()*16)%16 | 0;
+							dt = Math.floor(dt/16);
+							return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+					});
+					return uuid;
+				}
+
+
 				onMounted(()=>{
 					document.addEventListener('keydown', onKeyPress)
 					get_mondai_List()
-					
+					get_ranking()
 				})
 				return{
 					typing,
@@ -621,13 +835,23 @@ $time=date('Ymd-His');
 					mondai_roma,
 					start_btn,
 					timer_viewer,
+					st_cnt_dwntimer_viewer,
 					level,
 					get_mondai_List,
 					score,
 					get_romaji,
 					btn_name,
-					player_img,
-					enemy_img,
+					//player_img,
+					//enemy_img,
+					nik_name,
+					nendai,
+					area,
+					ins_ranking,
+					ranking_mode,
+					sougou_rank,
+					area_rank,
+					nendai_rank,
+					guid,
 				}
 			}
 		}).mount('#app');
