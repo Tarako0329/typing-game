@@ -2,6 +2,7 @@ ver1.00.0:vue3cdn修正test
 ver1.00.1:meta add
 ver1.01.0:アニメーション変更
 ver1.01.1:細かな修正
+ver1.01.2:細かな修正
 
 cd /home/pcntfsrg/public_html/games/typing-game
 git fetch --all

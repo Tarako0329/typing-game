@@ -24,6 +24,5 @@ log_writer2("ajax_get_mondai.php","Get user!! yattane !","lv1");
 header('Content-type: application/json');
 // htmlへ渡す配列$productListをjsonに変換する
 echo json_encode($MondaiList, JSON_UNESCAPED_UNICODE);
+exit();
 ?>
-
-

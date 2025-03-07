@@ -47,9 +47,9 @@ $time=date('Ymd-His');
 	</script>    <!--ページ専用CSS-->
 	<TITLE>【無料タイピングゲーム】タイピング、やろ～よ</TITLE>
 </head>
-<body style='width:100%;min-width:900px;text-align:center;'>
+<body style='width:100%;text-align:center;'>
 	<div  id='app'>
-	<header> 
+	<header style='min-width:800px;'> 
 		<h1>タイピング、やろ～よ</h1>
 		<p>レベルをえらんでスタートボタンを押してください。</p>
 		<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;margin-right:auto; margin-left:auto;'>
@@ -60,38 +60,40 @@ $time=date('Ymd-His');
 			<option value=5>レベル ５</option>
 		</select>
 	</header>
-	<main class='container'>
+	<main class='container' style='min-width:800px;'>
 		<div v-show='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
 		<div v-show='miss' class='buruburu wrap' style='text-align:center;width:300px;font-size:100px;z-index:99;'>ＸＸＸ</div>
 		<div v-show='finish_flg===true' class='wrap' style='text-align:center;width:600px;height:300px;font-size:100px;z-index:99;color:blue;'>おしまいっ！</div>
 
-		<div style='border: solid;border-width: thin;padding:10px;'>
-			<div style='width:100%;height:250px;' id='canv_div'>
-				<canvas id="testCanvas" width="100%" height="250px"></canvas>
-			</div>
-			<div style='text-align:center;'>
-				<div class='pt-3' style='height:40px;margin:0px;'>
-					<p>これがうてるかな----？</p>
+		<div class='row d-flex'>
+			<div style='border: solid;border-width: thin;padding:10px;'>
+				<div style='width:100%;height:250px;' id='canv_div'>
+					<canvas id="testCanvas" width="100%" height="250px"></canvas>
 				</div>
-				<div class='pt-1' style='height:60px;margin:0px;background:white;'>
-					<p style='font-size:24px;'>　{{mondai_disp}}　</p><!--漢字-->
+				<div style='text-align:center;'>
+					<div class='pt-3' style='height:40px;margin:0px;'>
+						<p>これがうてるかな----？</p>
+					</div>
+					<div class='pt-1' style='height:60px;margin:0px;background:white;'>
+						<p style='font-size:24px;'>　{{mondai_disp}}　</p><!--漢字-->
+					</div>
+					<div class='mondai kana' style='margin:0px;'>
+						<p style='font-size:16px;'>　{{mondai}}　</p><!--ひらがな-->
+					</div>
+					<div class='mt-5 text-center' style='height:100px;'>
+						<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>　{{mondai_roma}}　</p><!--アルファベット-->
+						<template v-if='mondai_roma===""' >
+							<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
+							<span class='ms-5 me-5'>>>></span>
+							<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span>
+						</template>
+					</div>
 				</div>
-				<div class='mondai kana' style='margin:0px;'>
-					<p style='font-size:16px;'>　{{mondai}}　</p><!--ひらがな-->
-				</div>
-				<div class='mt-5' style='height:100px;'>
-					<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>　{{mondai_roma}}　</p><!--アルファベット-->
-					<template v-if='mondai_roma===""' >
-					<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
-						　　>>>　　
-						<span class='kana' style='font-size:23px;'>{{get_romaji[0]}}</span>
-					</template>
-				</div>
-			</div>
-			<div style='height:50px;padding-top:5px;'>
+				<div style='height:50px;padding-top:5px;'>
 				<span>のこりじかん：</span><input v-model='timer_viewer' style='width:70px;height:35px;font-size:20px;text-align:center;' type='number'>
 				　
 				<span style=''>とくてん：<span style='font-size:20px;color:blue'>{{score}}</span></span>
+				</div>
 			</div>
 		</div>
 		<hr>
@@ -550,6 +552,16 @@ $time=date('Ymd-His');
 						clearInterval(timerId)
 						timer_viewer.value=timelimit/1000
 						finish_flg.value = true
+						setTimeout(function() {
+						  finish_flg.value = false
+						}, 3000)
+
+						//mondai_list.value=[]
+						mondai.value=""
+						mondai_disp.value=""
+						mondai_roma.value=""
+						typing.value=""
+						typingJP.value=""
 						btn_name.value='スタート'
 						return
 					}
@@ -577,6 +589,7 @@ $time=date('Ymd-His');
 						}
 					},100,)
 				}
+
 				const timer=(tt)=>{//タイマー
 					let now = new Date()
 					let countdowm = (tt - now.getTime())
