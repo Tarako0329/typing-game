@@ -53,7 +53,7 @@ html{
 		background-color: #bee0ce;
 }
 header{
-		height: 115px; 
+		height: 65px; 
 		padding: 10px 2px; /* ヘッダーに上下左右それぞれ余白を指定 */
 		box-sizing: border-box; /* padding分を含んで幅を100%にするため */
 		width: 100%;
@@ -62,6 +62,10 @@ header{
 		text-align:center;
 		background-color: var(--header-color);
 		color:var(--header-f-color);
+}
+.rank_head{
+	background-color: var(--header-color);
+	color:#fff;
 }
 .mondai{
 	/*font-size:20px;*/

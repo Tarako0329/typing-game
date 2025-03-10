@@ -24,6 +24,7 @@ $time=date('Ymd-His');
 	<!-- Bootstrap5 CSS/js -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<!-- Google Font -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,16 +50,20 @@ $time=date('Ymd-His');
 </head>
 <body style='width:100%;text-align:center;'>
 	<div  id='app'>
-	<header style='min-width:800px;'> 
+	<header class='container position-relative' style='min-width:800px;'> 
 		<h1>タイピング、やろ～よ</h1>
-		<p>レベルをえらんでスタートボタンを押してください。</p>
+		<!--<p>レベルをえらんでスタートボタンを押してください。</p>
 		<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;margin-right:auto; margin-left:auto;'>
 			<option value=1>レベル １</option>
 			<option value=2>レベル ２</option>
 			<option value=3>レベル ３</option>
 			<option value=4>レベル ４</option>
 			<option value=5>レベル ５</option>
-		</select>
+		</select>-->
+		<button type="button" style='height:65px;' class="btn btn-primary position-absolute top-0 end-0 fs-2" data-bs-toggle="modal" data-bs-target="#ranking" id='ranking_disp'>
+			<i class="bi bi-list-ol me-3"></i>順位を見る
+		</button>
+
 	</header>
 	<main class='container' style='min-width:800px;'>
 		<div v-show='hit' class='wrap' style='text-align:center;width:300px;font-size:200px;z-index:99;color:blue;'>〇</div>
@@ -81,7 +86,7 @@ $time=date('Ymd-His');
 					<div class='mondai kana' style='margin:0px;'>
 						<p style='font-size:16px;'>　{{mondai}}　</p><!--ひらがな-->
 					</div>
-					<div class='mt-5 text-center' style='height:80px;'>
+					<div class='mt-3 text-center' style='height:40px;'>
 						<p v-if='mondai_roma!==""' class='romaji' style='font-size:23px;'>　{{mondai_roma}}　</p><!--アルファベット-->
 						<template v-if='mondai_roma===""' >
 							<span class='romaji' style='font-size:23px;color:red;'>{{get_romaji[1]}}</span><!--アルファベット-->
@@ -109,15 +114,25 @@ $time=date('Ymd-His');
 			</div>
 		</div>
 		<div style='text-align:center;border:solid;border-width:thin;padding:5px 20px;min-height:50px;font-size:20px;background-color:#fff;'>{{answer}}</div>
-		<div style='text-align:center;padding:15px 0px'>
-			<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button>
+		<div class='d-flex text-center' style='padding:15px 0px;'>
+			<div class='d-flex' style='margin-right:auto; margin-left:auto;'>
+			<select v-model='level' @change='get_mondai_List()' class='form-select form-select-lg' style='text-align:center;width:150px;'>
+				<option value=1>レベル １</option>
+				<option value=2>レベル ２</option>
+				<option value=3>レベル ３</option>
+				<option value=4>レベル ４</option>
+				<option value=5>レベル ５</option>
+			</select>
+
+			<button @click='start_btn()' class='btn btn-primary' style='width:150px;height:40px;font-size:20px;'>{{btn_name}}</button><!--スタート・リセットボタン-->
+			</div>
 		</div>
 	
 	</main>
 	<footer></footer>
 	<!-- Modal -->
 	<!-- Button trigger modal -->
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id='rank_touroku'>
+	<button type="button" style="display: none;" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id='rank_touroku'>
 	  Launch static backdrop modal
 	</button>
 	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -205,28 +220,36 @@ $time=date('Ymd-His');
 	    </div>
 	  </div>
 	</div>
-	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ranking" id='ranking_disp'>
-	  Launch static backdrop modal
-	</button>
-	<div class="modal fade" id="ranking" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal fade" id="ranking" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-dialog-scrollable modal-xl">
 	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h1 class="modal-title fs-5" id="staticBackdropLabel">ランキング</h1>
-	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      <div class="modal-header ps-5">
+					<div class='d-flex' style='margin-right:auto; margin-left:auto;'>
+	        <h1 class="modal-title fs-3" id="staticBackdropLabel">レベル別得点ランキング</h1>
+					<select v-model='rank_level' class='ms-3 form-select form-select-lg' style='text-align:center;width:150px;'>
+						<option value=1>レベル １</option>
+						<option value=2>レベル ２</option>
+						<option value=3>レベル ３</option>
+						<option value=4>レベル ４</option>
+						<option value=5>レベル ５</option>
+					</select>
+					</div>
+
 	      </div>
-	      <div class="modal-body p-5">
+	      <div class="modal-body ps-5">
 					<div class='mb-5'>
+						<div class='mb-3 p-1 rank_head'>総合ランキング</div>
 						<template v-for='(list,index) in sougou_rank' :key='list.SEQ'>
 							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
-								<div class='col-2'>総合 {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+								<div class='col-2'>{{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
 							</div>
 							<div v-else-if='list.guid===guid' class="row text-start mb-3"  style='color:red;' :id='list.SEQ'>
-								<div class='col-2'>総合 {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
+								<div class='col-2'>{{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
 							</div>
 						</template>
 					</div>
 					<div class='mb-5'>
+						<div class='mb-3 p-1 rank_head'>年代別ランキング</div>
 						<template v-for='(list,index) in nendai_rank' :key='list.SEQ'>
 							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
 								<div class='col-2'>{{list.nendai}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
@@ -237,6 +260,7 @@ $time=date('Ymd-His');
 						</template>
 					</div>
 					<div class='mb-5'>
+					<div class='mb-3 p-1 rank_head'>地域別ランキング</div>
 						<template v-for='(list,index) in area_rank' :key='list.SEQ'>
 							<div v-if='list.guid!==guid' class="row text-start mb-3" :id='list.SEQ'>
 								<div class='col-2'>{{list.area}} {{list.順位}}位</div><div class='col-4'>{{list.nikname}}</div><div class='col-2'>{{list.score}}点</div><div class='col-4'>{{list.ymd}}</div>
@@ -255,7 +279,7 @@ $time=date('Ymd-His');
 	</div>
 	</div>
 	<script>
-		const { createApp, ref, onMounted, computed, VueCookies } = Vue;
+		const { createApp, ref, onMounted, computed, VueCookies,watch } = Vue;
 		createApp({
 			setup(){
 				const typing=ref('')
@@ -761,6 +785,7 @@ $time=date('Ymd-His');
 				const nendai_rank = ref([])
 				const area_rank = ref([])
 				const guid = ref("")
+				const rank_level = ref("1")
 
 				const ranking_mode = () =>{
 					timer_viewer.value=60
@@ -779,6 +804,7 @@ $time=date('Ymd-His');
           axios.post("ajax_ins_ranking.php",form, {headers: {'Content-Type': 'multipart/form-data'}})
           .then((response)=>{
 						console.log(response)
+						rank_level.value = level.value
 						get_ranking()
 						document.getElementById("ranking_disp").click()
           })
@@ -790,7 +816,7 @@ $time=date('Ymd-His');
           })
 				}
 				const get_ranking = () =>{
-					axios.get("ajax_get_ranking.php")
+					axios.get(`ajax_get_ranking.php?level=${rank_level.value}`)
           .then((response)=>{
 						console.log(response)
 						sougou_rank.value = response.data.sougou
@@ -804,6 +830,10 @@ $time=date('Ymd-His');
           })
 
 				}
+
+				watch([rank_level],()=>{
+					get_ranking()
+				})
 
 				const GET_GUID = () =>{//ランキングの特定に使用
 					let dt = new Date().getTime();
@@ -852,6 +882,7 @@ $time=date('Ymd-His');
 					area_rank,
 					nendai_rank,
 					guid,
+					rank_level,
 				}
 			}
 		}).mount('#app');

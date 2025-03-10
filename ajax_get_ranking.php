@@ -4,29 +4,36 @@
 *   lv     ：問題のレベル
 */
 require_once "php_header.php";
+$level = $_GET["level"];
 
 	// DBとの接続
 	$sql = "SELECT 
 		DENSE_RANK() OVER(ORDER BY score desc) as 順位
 		,ranking.* 
-		from ranking";
+		from ranking
+		where level = :level";
 	$stmt = $pdo_h->prepare($sql);
+	$stmt->bindValue("level",$level,PDO::PARAM_STR);
 	$stmt->execute();
 	$sougou = $stmt->fetchAll();
-
+	
 	$sql = "SELECT 
 		DENSE_RANK() OVER(PARTITION BY area ORDER BY score desc) as 順位
 		,ranking.* 
-		from ranking";
+		from ranking
+		where level = :level";
 	$stmt = $pdo_h->prepare($sql);
+	$stmt->bindValue("level",$level,PDO::PARAM_STR);
 	$stmt->execute();
 	$area = $stmt->fetchAll();
-
+	
 	$sql = "SELECT 
 		DENSE_RANK() OVER(PARTITION BY nendai ORDER BY score desc) as 順位
 		,ranking.* 
-		from ranking";
+		from ranking
+		where level = :level";
 	$stmt = $pdo_h->prepare($sql);
+	$stmt->bindValue("level",$level,PDO::PARAM_STR);
 	$stmt->execute();
 	$nendai = $stmt->fetchAll();
 

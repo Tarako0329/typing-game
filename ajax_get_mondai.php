@@ -21,8 +21,8 @@ if(!empty($_POST)){
 log_writer2("ajax_get_mondai.php","Get user!! yattane !","lv1");
 
 // ヘッダーを指定することによりjsonの動作を安定させる
-header('Content-type: application/json');
 // htmlへ渡す配列$productListをjsonに変換する
+header('Content-type: application/json');
 echo json_encode($MondaiList, JSON_UNESCAPED_UNICODE);
 exit();
 ?>

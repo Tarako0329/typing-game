@@ -24,8 +24,8 @@ if(!empty($_POST) && $_POST['score']>0){
 }
 
 // ヘッダーを指定することによりjsonの動作を安定させる
-header('Content-type: application/json');
 // htmlへ渡す配列$productListをjsonに変換する
+header('Content-type: application/json');
 echo json_encode($msg, JSON_UNESCAPED_UNICODE);
 exit();
 ?>
